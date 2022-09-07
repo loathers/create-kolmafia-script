@@ -1,5 +1,5 @@
 {
-  "name": "{{name}}",
+  "name": "{{kebab name}}",
   "version": "0.0.0",
   "author": "{{author}} <{{email}}>",
   "homepage": "",
