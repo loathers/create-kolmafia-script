@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "author": "Sam Gaus <sam@gaus.co.uk>",
   "scripts": {
-    "build": "tsup src/cli.ts --minify",
+    "build": "tsup-node src/cli.ts --minify",
     "clean": "shx rm -rf lib",
-    "dev": "tsup src/cli.ts --watch",
+    "dev": "tsup-node src/cli.ts --watch",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "bin": "dist/cli.js",
