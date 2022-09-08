@@ -31,6 +31,7 @@ function main() {
           "libram"
         )} as a dependency?`,
         default: true,
+        prompt: "if-no-arg",
       },
     },
     after: ({ answers, installNpmPackage }) => {
