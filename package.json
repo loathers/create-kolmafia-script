@@ -1,7 +1,7 @@
 {
   "name": "create-kolmafia-script",
   "description": "Create a kolmafia script with ease",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Sam Gaus <sam@gaus.co.uk>",
   "scripts": {
     "build": "tsup-node src/cli.ts --minify",
