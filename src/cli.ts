@@ -2,9 +2,7 @@
 
 import { AfterHookOptions, create } from 'create-create-app';
 import { resolve } from 'path';
-import { Chalk } from "chalk";
-
-const chalk = new Chalk();
+import chalk from "chalk";
 
 const templateRoot = resolve(__dirname, '..', 'templates');
 
