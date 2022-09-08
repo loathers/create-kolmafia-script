@@ -2,5 +2,5 @@ function main(): void {
   console.log("You have successfully built {{name}}!");
 }
 
-// Export the main function so that KoLmafia can find it
+// This special export lets KoLmafia know where to start running your script from
 module.exports.main = main;
