@@ -55,7 +55,7 @@ async function installToPath(installPath: string) {
   console.log(
     `${count} file${
       count === 1 ? " has" : "s have"
-    } been symlinked to ${chalk.italic(installPath)}.`
+    } been symlinked inside ${chalk.italic(installPath)}.`
   );
   process.exit(0);
 }

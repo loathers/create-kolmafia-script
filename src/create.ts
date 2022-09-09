@@ -4,11 +4,10 @@ import chalk from "chalk";
 
 const templateRoot = resolve(__dirname, "..", "templates");
 
-function caveat({ answers }: AfterHookOptions) {
-  const pm = answers.packageManager || "npm";
+function caveat() {
   return `
 Your KoLmafia script has been successfully bootstrapped!
-Once you've navigated to the directory you can make changes to \`main.ts\` and run \`${pm} run build\` to prepare your script for KoLmafia!
+Once you've navigated to the directory you find more information in the readme!
   `;
 }
 
