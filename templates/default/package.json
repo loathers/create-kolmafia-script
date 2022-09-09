@@ -7,7 +7,8 @@
   "scripts": {
     "build": "node build.mjs",
     "format": "prettier --write src/**/*.ts *.{mjs,js,json}",
-    "watch": "node build.mjs --watch"
+    "watch": "node build.mjs --watch",
+    "install-mafia": "create-kolmafia-script --install"
   },
   "dependencies": {
     "kolmafia": "latest"
@@ -24,6 +25,7 @@
     "@types/node": "^18.6.3",
     "@typescript-eslint/eslint-plugin": "^5.32.0",
     "@typescript-eslint/parser": "^5.32.0",
+    "create-kolmafia-script": "latest",
     "esbuild": "^0.14.51",
     "esbuild-plugin-babel": "^0.2.3",
     "eslint": "^8.21.0",
