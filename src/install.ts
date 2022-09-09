@@ -34,7 +34,7 @@ async function installToPath(installPath: string) {
       const target = path.join(directory, f.name);
       const source = path.join(
         absoluteInstallPath,
-        path.relative(dist, target)
+        path.relative(dist, directory)
       );
       await fs.promises.symlink(target, source);
       count++;
