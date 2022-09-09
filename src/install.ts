@@ -15,25 +15,6 @@ async function installMac() {
 
 const permissables = ["scripts", "data", "images", "relay", "ccs", "planting"];
 
-async function* walkDist(dist: string) {
-  async function* walk(dir: string): AsyncGenerator<string> {
-    for await (const d of await fs.promises.opendir(dir)) {
-      const entry = path.join(dir, d.name);
-      if (dir === dist) {
-        if (d.isDirectory() && permissables.includes(d.name)) {
-          yield* walk(entry);
-        }
-      } else if (d.isDirectory()) {
-        yield* walk(entry);
-      } else if (d.isFile()) {
-        yield entry;
-      }
-    }
-  }
-
-  yield* walk(dist);
-}
-
 async function installToPath(installPath: string) {
   const absoluteInstallPath = path.resolve(process.cwd(), installPath);
 
@@ -45,11 +26,19 @@ async function installToPath(installPath: string) {
   const dist = path.join(process.cwd(), "dist");
 
   let count = 0;
-  for await (const target of walkDist(dist)) {
-    const source = path.join(absoluteInstallPath, path.relative(dist, target));
-    await fs.promises.mkdir(path.dirname(source), { recursive: true });
-    await fs.promises.symlink(target, source);
-    count++;
+  for await (const d of await fs.promises.opendir(dist)) {
+    if (!d.isDirectory() || !permissables.includes(d.name)) continue;
+
+    const directory = path.join(dist, d.name);
+    for await (const f of await fs.promises.opendir(directory)) {
+      const target = path.join(directory, f.name);
+      const source = path.join(
+        absoluteInstallPath,
+        path.relative(dist, target)
+      );
+      await fs.promises.symlink(target, source);
+      count++;
+    }
   }
 
   console.log(
