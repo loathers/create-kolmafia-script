@@ -31,16 +31,20 @@ async function installToPath(installPath: string) {
 
     const directory = path.join(dist, d.name);
     for await (const f of await fs.promises.opendir(directory)) {
+      if (process.platform === "win32" && !f.isDirectory()) {
+        console.warn(
+          `WARNING: On Windows we can't symlink single files into KoLmafia directories like ${chalk.italic(
+            d.name
+          )}. Try moving ${chalk.italic(f.name)} into a subdirectory.`
+        );
+        continue;
+      }
       const target = path.join(directory, f.name);
       const source = path.join(
         absoluteInstallPath,
         path.relative(dist, target)
       );
-      await fs.promises.symlink(
-        target,
-        source,
-        f.isDirectory() ? "dir" : "file"
-      );
+      await fs.promises.symlink(target, source, "junction");
       count++;
     }
   }
