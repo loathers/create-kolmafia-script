@@ -2,6 +2,7 @@ import chalk from "chalk";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import yargsInteractive from "yargs-interactive";
 
 async function installLinux() {
   installToPath(path.join(os.homedir(), ".kolmafia"));
@@ -58,21 +59,31 @@ async function installToPath(installPath: string) {
 }
 
 export async function install() {
+  if (process.argv[3] !== undefined) {
+    return await installToPath(process.argv[3]);
+  }
+
   switch (process.platform) {
     case "linux":
       return await installLinux();
     case "darwin":
       return await installMac();
     default:
-      const installPath = process.argv[3];
-      if (installPath === undefined) {
-        console.error(
-          "Sorry, KoLmafia scripts cannot automatically be installed on your operating system. Run this command again with a path to your KoLmafia directory."
-        );
-        process.exit(1);
-      }
-
-      await installToPath(installPath);
+      yargsInteractive()
+        .usage("")
+        .interactive({
+          interactive: { default: true },
+          install: {
+            type: "input",
+            describe: `The location of your KoLmafia data could not be detected.\nPlease input the directory that contains (e.g.) your ${chalk.italic(
+              "scripts"
+            )} folder`,
+            prompt: "if-no-arg",
+          },
+        })
+        .then(async ({ installPath }) => {
+          await installToPath(installPath);
+        });
       break;
   }
 }
