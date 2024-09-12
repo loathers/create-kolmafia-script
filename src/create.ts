@@ -2,7 +2,7 @@ import { create as createApp } from "create-create-app";
 import { resolve } from "path";
 import chalk from "chalk";
 
-const templateRoot = resolve(__dirname, "..", "templates");
+const templateRoot = resolve(import.meta.dirname, "..", "templates");
 
 function caveat() {
   return `

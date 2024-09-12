@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { create } from "./create";
-import { install } from "./install";
+import { create } from "./create.js";
+import { install } from "./install.js";
 
 function main() {
   const firstArgument = process.argv[2];
