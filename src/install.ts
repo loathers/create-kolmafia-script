@@ -10,7 +10,7 @@ async function installLinux() {
 
 async function installMac() {
   installToPath(
-    path.join(os.homedir(), "Library", "Application Support", "KoLmafia")
+    path.join(os.homedir(), "Library", "Application Support", "KoLmafia"),
   );
 }
 
@@ -35,15 +35,15 @@ async function installToPath(installPath: string) {
       if (process.platform === "win32" && !f.isDirectory()) {
         console.warn(
           `WARNING: On Windows we can't symlink single files into KoLmafia directories like ${chalk.italic(
-            d.name
-          )}. Try moving ${chalk.italic(f.name)} into a subdirectory.`
+            d.name,
+          )}. Try moving ${chalk.italic(f.name)} into a subdirectory.`,
         );
         continue;
       }
       const target = path.join(directory, f.name);
       const source = path.join(
         absoluteInstallPath,
-        path.relative(dist, target)
+        path.relative(dist, target),
       );
       await fs.promises.symlink(target, source, "junction");
       count++;
@@ -53,7 +53,7 @@ async function installToPath(installPath: string) {
   console.log(
     `${count} file${
       count === 1 ? " has" : "s have"
-    } been symlinked inside ${chalk.italic(installPath)}.`
+    } been symlinked inside ${chalk.italic(installPath)}.`,
   );
   process.exit(0);
 }
@@ -76,7 +76,7 @@ export async function install() {
           install: {
             type: "input",
             describe: `The location of your KoLmafia data could not be detected.\nPlease input the directory that contains (e.g.) your ${chalk.italic(
-              "scripts"
+              "scripts",
             )} folder`,
             prompt: "if-no-arg",
           },

@@ -14,8 +14,8 @@ Once you've navigated to the directory you find more information in the readme!
 export function create() {
   console.log(
     `🍸📜 Welcome to ${chalk.bold(
-      "create-kolmafia-script"
-    )}! We're going to ask a few questions to get you started`
+      "create-kolmafia-script",
+    )}! We're going to ask a few questions to get you started`,
   );
 
   createApp("create-kolmafia-script", {
@@ -25,7 +25,7 @@ export function create() {
       libram: {
         type: "confirm",
         describe: `Would you like to install ${chalk.italic(
-          "libram"
+          "libram",
         )} as a dependency?`,
         default: true,
         prompt: "if-no-arg",
