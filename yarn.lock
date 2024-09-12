@@ -522,6 +522,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chalk@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "chalk@npm:5.3.0"
+  checksum: 10c0/8297d436b2c0f95801103ff2ef67268d362021b8210daf8ddbe349695333eb3610a71122172ff3b0272f1ef2cf7cc2c41fdaa4715f52e49ffe04c56340feed09
+  languageName: node
+  linkType: hard
+
 "chardet@npm:^0.7.0":
   version: 0.7.0
   resolution: "chardet@npm:0.7.0"
@@ -666,7 +673,7 @@ __metadata:
   dependencies:
     "@types/node": "npm:^22.5.4"
     "@types/yargs-interactive": "npm:^2.1.6"
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^5.3.0"
     create-create-app: "npm:^7.3.0"
     prettier: "npm:^3.3.3"
     shx: "npm:^0.3.4"

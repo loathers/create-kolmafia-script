@@ -1,4 +1,4 @@
-import { AfterHookOptions, create as createApp } from "create-create-app";
+import { create as createApp } from "create-create-app";
 import { resolve } from "path";
 import chalk from "chalk";
 

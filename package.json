@@ -10,6 +10,7 @@
     "prepublishOnly": "npm run clean && npm run build",
     "format": "prettier --write src/**/*.ts ./*.json"
   },
+  "type": "module",
   "bin": "dist/cli.js",
   "files": [
     "dist",
@@ -25,7 +26,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "chalk": "^4.1.2",
+    "chalk": "^5.3.0",
     "create-create-app": "^7.3.0",
     "yargs-interactive": "^3.0.1"
   },
