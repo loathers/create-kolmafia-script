@@ -82,6 +82,10 @@ export async function install() {
           },
         })
         .then(async ({ installPath }) => {
+          if (installPath === undefined) {
+            console.error("You must specify a path to your mafia directory");
+            process.exit(1);
+          }
           await installToPath(installPath);
         });
       break;
