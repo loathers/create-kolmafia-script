@@ -17,11 +17,11 @@
     "templates"
   ],
   "devDependencies": {
-    "@types/node": "^22.5.4",
+    "@types/node": "^22.7.3",
     "@types/yargs-interactive": "^2.1.6",
     "prettier": "^3.3.3",
     "shx": "^0.3.4",
-    "tsup": "^8.2.4",
+    "tsup": "^8.3.0",
     "typescript": "^5.6.2"
   },
   "license": "MIT",
