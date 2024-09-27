@@ -1,7 +1,7 @@
 {
   "name": "create-kolmafia-script",
   "description": "Create a kolmafia script with ease",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "author": "Sam Gaus <sam@gaus.co.uk>",
   "scripts": {
     "build": "tsup src/cli.ts --minify --format esm",
@@ -30,5 +30,9 @@
     "create-create-app": "patch:create-create-app@npm%3A7.3.0#~/.yarn/patches/create-create-app-npm-7.3.0-8f333811bf.patch",
     "yargs-interactive": "^3.0.1"
   },
-  "packageManager": "yarn@4.4.1"
+  "packageManager": "yarn@4.4.1",
+  "engines": {
+    "node": ">=20.11 < 21 || >=21.2"
+  },
+  "engineStrict": true
 }
