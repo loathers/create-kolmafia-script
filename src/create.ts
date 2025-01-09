@@ -178,28 +178,24 @@ export async function create() {
     }
   }
 
-  const installNpmPackage = async (
-    pkg: string | string[],
-    isDev: boolean = false,
-  ): Promise<void> => {
-    await addDeps(packageDir, Array.isArray(pkg) ? pkg : [pkg], {
-      isDev,
-      pm: packageManager,
-    });
-  };
+  if (!args["skip-install"]) {
+    const installNpmPackage = async (
+      pkg: string | string[],
+      isDev: boolean = false,
+    ): Promise<void> => {
+      await addDeps(packageDir, Array.isArray(pkg) ? pkg : [pkg], {
+        isDev,
+        pm: packageManager,
+      });
+    };
 
-  // run Node.js related tasks only if `package.json` does exist in the package root
-  // and skipNpmInstall is not falsy
-  const installDepsOnCreation = !args["skip-install"];
-
-  if (installDepsOnCreation) {
     console.log(`\nInstalling dependencies using ${packageManager}`);
     await installDeps(packageDir, packageManager);
-  }
 
-  if (answers.libram) {
-    console.log(`\nInstalling ${chalk.italic("libram")} as a dependency`);
-    await installNpmPackage("libram");
+    if (answers.libram) {
+      console.log(`\nInstalling ${chalk.italic("libram")} as a dependency`);
+      await installNpmPackage("libram");
+    }
   }
 
   console.log(`\nSuccessfully created ${chalk.bold.cyan(packageDir)}\n`);
