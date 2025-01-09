@@ -1,7 +1,7 @@
 {
   "name": "create-kolmafia-script",
   "description": "Create a kolmafia script with ease",
-  "version": "0.0.20",
+  "version": "0.1.0-beta",
   "author": "Sam Gaus <sam@gaus.co.uk>",
   "scripts": {
     "build": "tsup src/cli.ts --minify --format esm",
@@ -17,6 +17,7 @@
     "templates"
   ],
   "devDependencies": {
+    "@types/is-utf8": "^0",
     "@types/node": "^22.10.5",
     "@types/yargs-interactive": "^2.1.6",
     "prettier": "^3.4.2",
@@ -27,7 +28,14 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^5.4.1",
-    "create-create-app": "git+https://github.com/gausie/create-create-app",
+    "change-case": "^5.4.4",
+    "execa": "^9.5.2",
+    "gitconfig": "^2.0.8",
+    "globby": "^14.0.2",
+    "handlebars": "^4.7.8",
+    "is-utf8": "^0.2.1",
+    "slash": "^5.1.0",
+    "spdx-license-list": "^6.9.0",
     "yargs-interactive": "^3.0.1"
   },
   "packageManager": "yarn@4.6.0",
