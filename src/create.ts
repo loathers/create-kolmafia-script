@@ -2,6 +2,7 @@ import yargsInteractive from "yargs-interactive";
 import path from "node:path";
 import fs from "node:fs/promises";
 import chalk from "chalk";
+import dedent from "dedent";
 import spdxLicenseList from "spdx-license-list/full.js";
 
 import { addDeps, installDeps, whichPm } from "./npm.js";
@@ -197,12 +198,13 @@ export async function create() {
   }
 
   if (answers.libram) {
-    installNpmPackage("libram");
+    console.log(`\nInstalling ${chalk.italic("libram")} as a dependency`);
+    await installNpmPackage("libram");
   }
 
-  console.log(`\nSuccessfully created ${chalk.bold.cyan(packageDir)}`);
+  console.log(`\nSuccessfully created ${chalk.bold.cyan(packageDir)}\n`);
 
-  console.log(`
+  console.log(dedent`
     Your KoLmafia script has been successfully bootstrapped!
     Once you've navigated to the directory you find more information in the readme!
   `);

@@ -6,7 +6,7 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import { kebabCase } from "change-case";
 
-Handlebars.registerHelper('kebab', kebabCase);
+Handlebars.registerHelper("kebab", kebabCase);
 
 function format<T>(text: Buffer | string, view: T) {
   const template = Handlebars.compile(text.toString(), { noEscape: true });

@@ -39,7 +39,7 @@ export async function initPackage(
     }
     case "yarn": {
       command = "yarnpkg";
-      args = ["init", "-y", "--cwd", rootDir];
+      args = ["--cwd", rootDir, "init", "-y"];
       break;
     }
     case "pnpm": {
@@ -72,7 +72,7 @@ export async function installDeps(rootDir: string, pm: PackageManager) {
     }
     case "yarn": {
       command = "yarnpkg";
-      args = ["install", "--cwd", rootDir];
+      args = ["--cwd", rootDir, "install"];
       break;
     }
     case "pnpm": {
@@ -114,7 +114,7 @@ export async function addDeps(
     }
     case "yarn": {
       command = "yarnpkg";
-      args = ["add", "--cwd", rootDir, ...deps, isDev ? "-D" : ""];
+      args = ["--cwd", rootDir, "add", ...deps, isDev ? "-D" : ""];
       break;
     }
     case "pnpm": {
