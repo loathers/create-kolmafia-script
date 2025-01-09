@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "author": "{{author}} <{{email}}>",
   "homepage": "",
-  "license": "MIT",
+  "license": "{{license}}",
   "scripts": {
     "build": "node build.mjs",
     "format": "prettier --write src/**/*.ts *.{mjs,js,json}",

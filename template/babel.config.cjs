@@ -1,4 +1,5 @@
 // @ts-check
+/* globals module */
 
 /**
  * @returns {import("@babel/core").TransformOptions}
