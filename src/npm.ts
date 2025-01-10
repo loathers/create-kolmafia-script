@@ -9,7 +9,7 @@ export type PackageManager = "npm" | "yarn" | "pnpm";
 // https://github.com/zkochan/packages/tree/main/which-pm-runs
 export function whichPm(): PackageManager {
   if (!process.env.npm_config_user_agent) {
-    return "npm";
+    return "yarn";
   }
 
   const pmSpec = process.env.npm_config_user_agent.split(" ")[0];

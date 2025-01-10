@@ -1,6 +1,4 @@
 import fs from "node:fs/promises";
-// @ts-expect-error No types
-import gitconfig from "gitconfig";
 import chalk from "chalk";
 import { execa } from "execa";
 
@@ -19,8 +17,9 @@ export async function isOccupied(dirname: string) {
 
 export async function getGitUser(): Promise<{ name?: string; email?: string }> {
   try {
-    const config = await gitconfig.get({ location: "global" });
-    return config.user ?? {};
+    const { stdout: name } = await execa`git config --global user.name`;
+    const { stdout: email } = await execa`git config --global user.email`;
+    return { name, email };
   } catch (err) {
     return {};
   }

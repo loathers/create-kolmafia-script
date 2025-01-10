@@ -1,10 +1,10 @@
-import { globby } from "globby";
+import { kebabCase } from "change-case";
 import Handlebars from "handlebars";
-import slash from "slash";
-import isUtf8 from "is-utf8";
+import { isUtf8 } from "node:buffer";
 import path from "node:path";
 import fs from "node:fs/promises";
-import { kebabCase } from "change-case";
+
+const slash = (possiblyWindowsPath: string) => possiblyWindowsPath.replaceAll(path.sep, path.posix.sep);
 
 Handlebars.registerHelper("kebab", kebabCase);
 
@@ -20,14 +20,20 @@ async function prepareDirectory(filePath: string) {
   } catch {}
 }
 
+async function* walk(dir: string): AsyncGenerator<string> {
+  for await (const d of await fs.opendir(dir)) {
+    const entry = path.join(dir, d.name);
+    if (d.isDirectory()) yield* walk(entry);
+    else if (d.isFile()) yield entry;
+  }
+}
+
 export async function copy(args: {
   targetDir: string;
   sourceDir: string;
   view: Record<string, string | boolean | number>;
 }) {
-  const sourceFiles = await globby(slash(args.sourceDir), { dot: true });
-
-  for (const sourceFile of sourceFiles) {
+  for await (const sourceFile of walk(args.sourceDir)) {
     const relativePath = path.relative(args.sourceDir, sourceFile);
     const targetPath = format(
       slash(path.resolve(args.targetDir, relativePath)),
