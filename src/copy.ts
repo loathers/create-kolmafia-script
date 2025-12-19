@@ -4,7 +4,8 @@ import { isUtf8 } from "node:buffer";
 import path from "node:path";
 import fs from "node:fs/promises";
 
-const slash = (possiblyWindowsPath: string) => possiblyWindowsPath.replaceAll(path.sep, path.posix.sep);
+const slash = (possiblyWindowsPath: string) =>
+  possiblyWindowsPath.replaceAll(path.sep, path.posix.sep);
 
 Handlebars.registerHelper("kebab", kebabCase);
 
