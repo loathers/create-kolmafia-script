@@ -1,3 +1,3 @@
-export default function main(): void {
+export function main(): void {
   console.log("You have successfully built {{name}}!");
 }
