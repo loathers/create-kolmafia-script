@@ -1,4 +1,5 @@
 import { execa } from "execa";
+
 import { printCommand } from "./utils.js";
 
 export type PackageManager = "npm" | "yarn" | "pnpm";

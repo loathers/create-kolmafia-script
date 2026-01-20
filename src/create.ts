@@ -1,14 +1,13 @@
-import yargsInteractive from "yargs-interactive";
-import path from "node:path";
-import fs from "node:fs/promises";
 import chalk from "chalk";
 import dedent from "dedent";
+import fs from "node:fs/promises";
+import path from "node:path";
 import spdxLicenseList from "spdx-license-list/full.js";
+import yargsInteractive from "yargs-interactive";
 
-import { addDeps, installDeps, whichPm } from "./npm.js";
-
-import { getGitUser, initGit, isOccupied, toContact } from "./utils.js";
 import { copy } from "./copy.js";
+import { addDeps, installDeps, whichPm } from "./npm.js";
+import { getGitUser, initGit, isOccupied, toContact } from "./utils.js";
 
 const templateDir = path.resolve(import.meta.dirname, "..", "template");
 
@@ -53,9 +52,7 @@ export async function create() {
   const useCurrentDirectory = firstArg === ".";
 
   const name = useCurrentDirectory ? path.basename(process.cwd()) : firstArg;
-  const packageDir = useCurrentDirectory
-    ? process.cwd()
-    : path.resolve(firstArg);
+  const packageDir = useCurrentDirectory ? process.cwd() : path.resolve(firstArg);
 
   if (await isOccupied(packageDir)) {
     console.error(`${packageDir} is not an empty directory.`);
@@ -95,8 +92,7 @@ export async function create() {
     },
     "node-pm": {
       type: "list",
-      describe:
-        "Package manager to use for installing packages from npm. Only tested with yarn",
+      describe: "Package manager to use for installing packages from npm. Only tested with yarn",
       choices: ["npm", "yarn", "pnpm"],
       default: undefined, // We'll try to guess pm later
       prompt: "never",
@@ -113,9 +109,7 @@ export async function create() {
     },
     libram: {
       type: "confirm",
-      describe: `Would you like to install ${chalk.italic(
-        "libram",
-      )} as a dependency?`,
+      describe: `Would you like to install ${chalk.italic("libram")} as a dependency?`,
       default: true,
       prompt: "if-no-arg",
     },
@@ -129,9 +123,7 @@ export async function create() {
 
   const ignoredProps = ["name", "interactive", "node-pm", "nodePm"];
   const filteredArgs = Object.fromEntries(
-    Object.entries(args).filter(
-      (arg) => arg[0].match(/^[^$_]/) && !ignoredProps.includes(arg[0]),
-    ),
+    Object.entries(args).filter((arg) => arg[0].match(/^[^$_]/) && !ignoredProps.includes(arg[0])),
   ) as Answers;
 
   const year = new Date().getFullYear();

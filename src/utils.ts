@@ -1,12 +1,10 @@
-import fs from "node:fs/promises";
 import chalk from "chalk";
 import { execa } from "execa";
+import fs from "node:fs/promises";
 
 export async function isOccupied(dirname: string) {
   try {
-    return (
-      (await fs.readdir(dirname)).filter((s) => !s.startsWith(".")).length !== 0
-    );
+    return (await fs.readdir(dirname)).filter((s) => !s.startsWith(".")).length !== 0;
   } catch (err: any) {
     if (err?.code === "ENOENT") {
       return false;

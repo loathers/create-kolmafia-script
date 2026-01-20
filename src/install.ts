@@ -9,9 +9,7 @@ async function installLinux() {
 }
 
 async function installMac() {
-  installToPath(
-    path.join(os.homedir(), "Library", "Application Support", "KoLmafia"),
-  );
+  installToPath(path.join(os.homedir(), "Library", "Application Support", "KoLmafia"));
 }
 
 const permissables = ["scripts", "data", "images", "relay", "ccs", "planting"];
@@ -41,10 +39,7 @@ async function installToPath(installPath: string) {
         continue;
       }
       const target = path.join(directory, f.name);
-      const source = path.join(
-        absoluteInstallPath,
-        path.relative(dist, target),
-      );
+      const source = path.join(absoluteInstallPath, path.relative(dist, target));
       await fs.promises.symlink(target, source, "junction");
       count++;
     }

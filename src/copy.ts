@@ -1,10 +1,11 @@
 import { kebabCase } from "change-case";
 import Handlebars from "handlebars";
 import { isUtf8 } from "node:buffer";
-import path from "node:path";
 import fs from "node:fs/promises";
+import path from "node:path";
 
-const slash = (possiblyWindowsPath: string) => possiblyWindowsPath.replaceAll(path.sep, path.posix.sep);
+const slash = (possiblyWindowsPath: string) =>
+  possiblyWindowsPath.replaceAll(path.sep, path.posix.sep);
 
 Handlebars.registerHelper("kebab", kebabCase);
 
@@ -35,19 +36,16 @@ export async function copy(args: {
 }) {
   for await (const sourceFile of walk(args.sourceDir)) {
     const relativePath = path.relative(args.sourceDir, sourceFile);
-    const targetPath = format(
-      slash(path.resolve(args.targetDir, relativePath)),
-      args.view,
-    ).replace(
+    // Don't bring over node_modules or our yarn.lock (since it won't have the right package name)
+    if (relativePath.startsWith("node_modules") || relativePath === "yarn.lock") continue;
+    const targetPath = format(slash(path.resolve(args.targetDir, relativePath)), args.view).replace(
       new RegExp(`${path.sep}gitignore$`, "g"),
       `${path.sep}.gitignore`,
     );
     await prepareDirectory(targetPath);
 
     const sourceData = await fs.readFile(sourceFile);
-    const targetData = isUtf8(sourceData)
-      ? Buffer.from(format(sourceData, args.view))
-      : sourceData;
+    const targetData = isUtf8(sourceData) ? Buffer.from(format(sourceData, args.view)) : sourceData;
     await fs.writeFile(targetPath, targetData, "utf-8");
   }
 }
