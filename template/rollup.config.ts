@@ -59,7 +59,7 @@ const baseSettings = {
     : undefined,
 };
 
-export default [{ "dist/scripts/{{name}}/{{kebab name}}": "src/main.ts" }].map((input) => ({
+export default [{ "scripts/{{name}}/{{kebab name}}": "src/main.ts" }].map((input) => ({
   input,
   ...baseSettings,
 }));
