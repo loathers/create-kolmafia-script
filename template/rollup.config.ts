@@ -7,10 +7,8 @@ const watch = process.argv.includes("--watch") || process.argv.includes("-w");
 
 const baseSettings = {
   output: {
-    dir: "dist",
+    dir: "dist/scripts/{{name}}",
     format: "cjs",
-    entryFileNames: "[name].js",
-    chunkFileNames: "[name].js",
     exports: "auto",
   },
 
@@ -59,7 +57,7 @@ const baseSettings = {
     : undefined,
 };
 
-export default [{ "scripts/{{name}}/{{kebab name}}": "src/main.ts" }].map((input) => ({
+export default [{ "{{kebab name}}": "src/main.ts" }].map((input) => ({
   input,
   ...baseSettings,
 }));
