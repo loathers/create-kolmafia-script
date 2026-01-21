@@ -2,6 +2,7 @@ import babel from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
+import type { RollupOptions } from "rollup";
 
 const watch = process.argv.includes("--watch") || process.argv.includes("-w");
 
@@ -10,6 +11,7 @@ const baseSettings = {
     dir: "dist/scripts/{{name}}",
     format: "cjs",
     exports: "auto",
+    chunkFileNames: "_[name].js",
   },
 
   external: ["kolmafia"],
@@ -55,7 +57,7 @@ const baseSettings = {
         clearScreen: false,
       }
     : undefined,
-};
+} satisfies RollupOptions;
 
 export default [{ "{{kebab name}}": "src/main.ts" }].map((input) => ({
   input,
