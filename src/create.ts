@@ -6,7 +6,7 @@ import spdxLicenseList from "spdx-license-list/full.js";
 import yargsInteractive from "yargs-interactive";
 
 import { copy } from "./copy.js";
-import { addDeps, installDeps, whichPm } from "./npm.js";
+import { addDeps, configureYarn, installDeps, whichPm } from "./npm.js";
 import { getGitUser, initGit, isOccupied, toContact } from "./utils.js";
 
 const templateDir = path.resolve(import.meta.dirname, "..", "template");
@@ -176,6 +176,10 @@ export async function create() {
       if (err?.exitCode == 127) return; // no git available
       throw err;
     }
+  }
+
+  if (packageManager === "yarn") {
+    await configureYarn(packageDir);
   }
 
   if (!args["skip-install"]) {

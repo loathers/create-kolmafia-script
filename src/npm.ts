@@ -20,6 +20,14 @@ export function whichPm(): PackageManager {
   return name as PackageManager;
 }
 
+export async function configureYarn(rootDir: string) {
+  printCommand("yarnpkg", "--cwd", rootDir, "config", "set", "nodeLinker", "node-modules");
+  await execa("yarnpkg", ["--cwd", rootDir, "config", "set", "nodeLinker", "node-modules"], {
+    stdio: "inherit",
+    shell: true,
+  });
+}
+
 export async function initPackage(
   rootDir: string,
   {
