@@ -34,6 +34,8 @@ export interface Answers {
   license: string;
 
   libram: boolean;
+
+  grimoire: boolean;
 }
 
 export async function create() {
@@ -109,8 +111,14 @@ export async function create() {
     },
     libram: {
       type: "confirm",
-      describe: `Would you like to install ${chalk.italic("libram")} as a dependency?`,
+      describe: `Would you like to install ${chalk.italic("libram")} as a dependency? This is a general purpose library for KoLmafia scripting that you might find useful.`,
       default: true,
+      prompt: "if-no-arg",
+    },
+    grimoire: {
+      type: "confirm",
+      describe: `Would you like to install ${chalk.italic("grimoire")} as a dependency? This library provides a set of tools for writing adventuring scripts.`,
+      default: false,
       prompt: "if-no-arg",
     },
   };
@@ -187,6 +195,10 @@ export async function create() {
     if (answers.libram) {
       console.log(`\nInstalling ${chalk.italic("libram")} as a dependency`);
       await installNpmPackage("libram");
+    }
+    if (answers.grimoire) {
+      console.log(`\nInstalling ${chalk.italic("grimoire")} as a dependency`);
+      await installNpmPackage("grimoire-kolmafia");
     }
   }
 
