@@ -19,3 +19,8 @@ yarn-error.log*
 
 # Dependency directories
 node_modules/
+
+# We don't want to commit lockfiles to the template
+template/package-lock.json
+template/yarn.lock
+template/.yarnrc.yml
