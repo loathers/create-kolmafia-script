@@ -645,12 +645,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^25.0.9":
-  version: 25.0.9
-  resolution: "@types/node@npm:25.0.9"
+"@types/node@npm:^25.3.0":
+  version: 25.3.0
+  resolution: "@types/node@npm:25.3.0"
   dependencies:
-    undici-types: "npm:~7.16.0"
-  checksum: 10c0/a757efafe303d9c8833eb53c2e9a0981cd5ac725cdc04c5612a71db86468c938778d4fa328be4231b68fffc68258638764df7b9c69e86cf55f0bb67105eb056f
+    undici-types: "npm:~7.18.0"
+  checksum: 10c0/7b2b18c9d68047157367fc2f786d4f166d22dc0ad9f82331ca02fb16f2f391854123dbe604dcb938cda119c87051e4bb71dcb9ece44a579f483a6f96d4bd41de
   languageName: node
   linkType: hard
 
@@ -985,14 +985,14 @@ __metadata:
   resolution: "create-kolmafia-script@workspace:."
   dependencies:
     "@trivago/prettier-plugin-sort-imports": "npm:^6.0.2"
-    "@types/node": "npm:^25.0.9"
+    "@types/node": "npm:^25.3.0"
     "@types/yargs-interactive": "npm:^2.1.6"
     chalk: "npm:^5.6.2"
     change-case: "npm:^5.4.4"
     dedent: "npm:^1.7.1"
     execa: "npm:^9.6.1"
     handlebars: "npm:^4.7.8"
-    prettier: "npm:^3.8.0"
+    prettier: "npm:^3.8.1"
     shx: "npm:^0.4.0"
     spdx-license-list: "npm:^6.11.0"
     tsup: "npm:^8.5.1"
@@ -2305,12 +2305,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.8.0":
-  version: 3.8.0
-  resolution: "prettier@npm:3.8.0"
+"prettier@npm:^3.8.1":
+  version: 3.8.1
+  resolution: "prettier@npm:3.8.1"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10c0/8926e9c9941a293b76c2d799089d038e9f6d84fb37702fc370bedd03b3c70d7fcf507e2e3c4f151f222d81820a3b74cac5e692c955cfafe34dd0d02616ce8327
+  checksum: 10c0/33169b594009e48f570471271be7eac7cdcf88a209eed39ac3b8d6d78984039bfa9132f82b7e6ba3b06711f3bfe0222a62a1bfb87c43f50c25a83df1b78a2c42
   languageName: node
   linkType: hard
 
@@ -3018,10 +3018,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~7.16.0":
-  version: 7.16.0
-  resolution: "undici-types@npm:7.16.0"
-  checksum: 10c0/3033e2f2b5c9f1504bdc5934646cb54e37ecaca0f9249c983f7b1fc2e87c6d18399ebb05dc7fd5419e02b2e915f734d872a65da2e3eeed1813951c427d33cc9a
+"undici-types@npm:~7.18.0":
+  version: 7.18.2
+  resolution: "undici-types@npm:7.18.2"
+  checksum: 10c0/85a79189113a238959d7a647368e4f7c5559c3a404ebdb8fc4488145ce9426fcd82252a844a302798dfc0e37e6fb178ff481ed03bc4caf634c5757d9ef43521d
   languageName: node
   linkType: hard
 
