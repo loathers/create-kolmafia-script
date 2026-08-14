@@ -1,0 +1,22 @@
+name: "Setup project"
+description: "Set up Node, Yarn, and dependencies"
+inputs:
+  node-version:
+    description: "The version of Node.js to use"
+    required: true
+# This action does not have any outputs
+runs:
+  using: "composite"
+  steps:
+    - name: Enable corepack
+      run: corepack enable
+      shell: bash
+
+    - name: Use Node.js $\{{ inputs.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: $\{{ inputs.node-version }}
+
+    - name: Install dependencies
+      run: yarn install --immutable
+      shell: bash
