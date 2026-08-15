@@ -21,10 +21,12 @@ export function whichPm(): PackageManager {
 }
 
 export async function configureYarn(rootDir: string) {
-  printCommand("yarnpkg", "--cwd", rootDir, "config", "set", "nodeLinker", "node-modules");
-  await execa("yarnpkg", ["--cwd", rootDir, "config", "set", "nodeLinker", "node-modules"], {
+  const args = ["config", "set", "nodeLinker", "node-modules"];
+  printCommand("yarnpkg", ...args);
+  await execa("yarnpkg", args, {
     stdio: "inherit",
     shell: true,
+    cwd: rootDir,
   });
 }
 
@@ -43,12 +45,11 @@ export async function initPackage(
     case "npm": {
       command = "npm";
       args = ["init", "-y"];
-      process.chdir(rootDir);
       break;
     }
     case "yarn": {
       command = "yarnpkg";
-      args = ["--cwd", rootDir, "init", "-y"];
+      args = ["init", "-y"];
       break;
     }
     case "pnpm": {
@@ -62,7 +63,7 @@ export async function initPackage(
   printCommand(command, ...args);
 
   try {
-    await execa(command, args, { stdio: "inherit", shell: true });
+    await execa(command, args, { stdio: "inherit", shell: true, cwd: rootDir });
   } catch (err) {
     throw new Error(`Failed to install dependencies: ${err}`);
   }
@@ -76,17 +77,16 @@ export async function installDeps(rootDir: string, pm: PackageManager) {
     case "npm": {
       command = "npm";
       args = ["install"];
-      process.chdir(rootDir);
       break;
     }
     case "yarn": {
       command = "yarnpkg";
-      args = ["--cwd", rootDir, "install"];
+      args = ["install"];
       break;
     }
     case "pnpm": {
       command = "pnpm";
-      args = ["install", "--dir", rootDir];
+      args = ["install"];
       break;
     }
   }
@@ -94,7 +94,7 @@ export async function installDeps(rootDir: string, pm: PackageManager) {
   printCommand(command, ...args);
 
   try {
-    await execa(command, args, { stdio: "inherit", shell: true });
+    await execa(command, args, { stdio: "inherit", shell: true, cwd: rootDir });
   } catch (err) {
     throw new Error(`Failed to install dependencies: ${err}`);
   }
@@ -118,12 +118,11 @@ export async function addDeps(
     case "npm": {
       command = "npm";
       args = ["install", isDev ? "-D" : "-S", ...deps];
-      process.chdir(rootDir);
       break;
     }
     case "yarn": {
       command = "yarnpkg";
-      args = ["--cwd", rootDir, "add", ...deps, isDev ? "-D" : ""];
+      args = ["add", ...deps, isDev ? "-D" : ""];
       break;
     }
     case "pnpm": {
@@ -136,7 +135,7 @@ export async function addDeps(
   printCommand(command, ...args);
 
   try {
-    await execa(command, args, { stdio: "inherit", shell: true });
+    await execa(command, args, { stdio: "inherit", shell: true, cwd: rootDir });
   } catch (err) {
     throw new Error(`Failed to add dependencies: ${err}`);
   }
