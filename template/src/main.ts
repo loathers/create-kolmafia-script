@@ -1,3 +1,5 @@
+import { print } from "kolmafia";
+
 export function main(): void {
-  console.log("You have successfully built {{name}}!");
+  print("You have successfully built {{name}}!");
 }
