@@ -4,7 +4,7 @@
   "version": "0.3.0",
   "author": "Sam Gaus <sam@gaus.co.uk>",
   "scripts": {
-    "build": "tsup src/cli.ts --minify --format esm",
+    "build": "tsc --noEmit && tsup src/cli.ts --minify --format esm",
     "clean": "shx rm -rf dist",
     "dev": "tsup src/cli.ts --watch",
     "prepack": "npm run clean && npm run build",
