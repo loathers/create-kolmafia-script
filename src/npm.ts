@@ -18,7 +18,7 @@ export function isPmSupported(packageManager: string): packageManager is Package
 // The MIT License (MIT)
 // Copyright (c) 2017-2022 Zoltan Kochan <z@kochan.io>
 // https://github.com/zkochan/packages/tree/main/which-pm-runs
-function whichPm(): PackageManager | undefined {
+function whichPm(): string | undefined {
   if (!process.env.npm_config_user_agent) {
     printWarning("Could not detect package manager.");
     return undefined;
@@ -28,20 +28,16 @@ function whichPm(): PackageManager | undefined {
   const separatorPos = pmSpec.lastIndexOf("/");
   const name = pmSpec.substring(0, separatorPos);
 
-  if (!isPmSupported(name)) {
-    printWarning("Package manager", chalk.italic(name), "not supported.");
-    return undefined;
-  }
-
   return name;
 }
 
-export function getPmAndVersion(requested?: PackageManager): {
-  packageManager: PackageManager;
+export function getPmAndVersion(requested?: string): {
+  packageManager: string;
   packageManagerVersion: string;
 } {
   const fallback: PackageManager = "yarn";
-  const supplied = requested ?? whichPm();
+  const [name, version] = requested?.split("@") ?? [];
+  const supplied = name ?? whichPm();
 
   const packageManager =
     supplied ??
@@ -53,7 +49,15 @@ export function getPmAndVersion(requested?: PackageManager): {
       return fallback;
     })();
 
-  const packageManagerVersion = supportedPMs[packageManager];
+  const packageManagerVersion =
+    version ??
+    (isPmSupported(packageManager)
+      ? supportedPMs[packageManager]
+      : (() => {
+          throw new Error(
+            `Version needed for unsupported package manager: --node-pm=${packageManager}@VERSION`,
+          );
+        })());
   return { packageManager, packageManagerVersion };
 }
 
