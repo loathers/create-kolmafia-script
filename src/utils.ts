@@ -35,3 +35,7 @@ export function toContact(author: string, email?: string) {
 export function printCommand(...commands: string[]) {
   console.log(chalk.gray(">", ...commands));
 }
+
+export function printWarning(...warning: string[]) {
+  console.warn(chalk.yellow("⚠️", ...warning));
+}

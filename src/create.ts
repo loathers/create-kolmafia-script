@@ -6,7 +6,7 @@ import spdxLicenseList from "spdx-license-list/full.js";
 import yargsInteractive from "yargs-interactive";
 
 import { copy } from "./copy.js";
-import { addDeps, configureYarn, installDeps, whichPm } from "./npm.js";
+import { addDeps, configureYarn, installDeps, supportedPMs, getPmAndVersion } from "./npm.js";
 import { getGitUser, initGit, isOccupied, toContact } from "./utils.js";
 
 const templateDir = path.resolve(import.meta.dirname, "..", "template");
@@ -95,7 +95,7 @@ export async function create() {
     "node-pm": {
       type: "list",
       describe: "Package manager to use for installing packages from npm. Only tested with yarn",
-      choices: ["npm", "yarn", "pnpm"],
+      choices: Object.keys(supportedPMs),
       default: undefined, // We'll try to guess pm later
       prompt: "never",
     },
@@ -127,7 +127,7 @@ export async function create() {
     .usage("$0 <name> [args]")
     .interactive(yargsOption as any)) as Record<keyof typeof yargsOption, any>;
 
-  const packageManager = args["node-pm"] ?? whichPm();
+  const { packageManager, packageManagerVersion } = getPmAndVersion(args["node-pm"]);
 
   const ignoredProps = ["name", "interactive", "node-pm", "nodePm"];
   const filteredArgs = Object.fromEntries(
@@ -154,6 +154,7 @@ export async function create() {
       ...answers,
       year,
       packageManager,
+      packageManagerVersion,
     },
   });
 
