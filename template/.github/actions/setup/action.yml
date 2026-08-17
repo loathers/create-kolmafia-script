@@ -18,5 +18,14 @@ runs:
         node-version: $\{{ inputs.node-version }}
 
     - name: Install dependencies
-      run: yarn install --immutable
+      {{!--
+        Handlebars doesn't have a `switch` block; this is the closest option I could figure out.
+        Adapted from https://github.com/handlebars-lang/handlebars.js/issues/927#issuecomment-886163779
+      --}}
+      {{#if true}}
+      {{~#*inline "yarn"}}--immutable{{/inline~}}
+      {{~#*inline "npm"}}--ci{{/inline~}}
+      {{!-- We use --frozen-lockfile for PNPM and as the default --}}
+      run: {{packageManager}} install {{#> (lookup . "packageManager")}}--frozen-lockfile{{/undefined}}
+      {{/if}}
       shell: bash
