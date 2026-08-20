@@ -6,7 +6,7 @@ export async function isOccupied(dirname: string) {
   try {
     return (await fs.readdir(dirname)).filter((s) => !s.startsWith(".")).length !== 0;
   } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+    if (err instanceof Error && "code" in err && err.code === "ENOENT") {
       return false;
     }
     throw err;

@@ -179,7 +179,7 @@ export async function create() {
       console.log("\nInitializing a git repository");
       await initGit(packageDir);
     } catch (err) {
-      if ((err as ExecaError)?.exitCode === 127) return; // no git available
+      if (err instanceof ExecaError && err.exitCode === 127) return; // no git available
       throw err;
     }
   }
