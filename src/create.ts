@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import dedent from "dedent";
+import { ExecaError } from "execa";
 import fs from "node:fs/promises";
 import path from "node:path";
 import spdxLicenseList from "spdx-license-list/full.js";
@@ -65,7 +66,7 @@ export async function create() {
 
   const gitUser = await getGitUser();
 
-  const yargsOption = {
+  const yargsOption: yargsInteractive.Option = {
     interactive: { default: true },
     description: {
       type: "input",
@@ -126,7 +127,8 @@ export async function create() {
 
   const args = (await yargsInteractive()
     .usage("$0 <name> [args]")
-    .interactive(yargsOption as any)) as Record<keyof typeof yargsOption, any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .interactive(yargsOption)) as Record<keyof typeof yargsOption, any>;
 
   const pm = getPmAndVersion(args["node-pm"]);
   if (!pm) return;
@@ -167,7 +169,7 @@ export async function create() {
       path.resolve(packageDir, "LICENSE"),
       spdxLicenseList[answers.license].licenseText,
     );
-  } catch (e) {
+  } catch {
     // do not generate LICENSE
   }
 
@@ -176,8 +178,8 @@ export async function create() {
     try {
       console.log("\nInitializing a git repository");
       await initGit(packageDir);
-    } catch (err: any) {
-      if (err?.exitCode == 127) return; // no git available
+    } catch (err) {
+      if (err instanceof ExecaError && err.exitCode === 127) return; // no git available
       throw err;
     }
   }

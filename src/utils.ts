@@ -5,8 +5,8 @@ import fs from "node:fs/promises";
 export async function isOccupied(dirname: string) {
   try {
     return (await fs.readdir(dirname)).filter((s) => !s.startsWith(".")).length !== 0;
-  } catch (err: any) {
-    if (err?.code === "ENOENT") {
+  } catch (err) {
+    if (err instanceof Error && "code" in err && err.code === "ENOENT") {
       return false;
     }
     throw err;
@@ -18,7 +18,7 @@ export async function getGitUser(): Promise<{ name?: string; email?: string }> {
     const { stdout: name } = await execa`git config --global user.name`;
     const { stdout: email } = await execa`git config --global user.email`;
     return { name, email };
-  } catch (err) {
+  } catch {
     return {};
   }
 }
