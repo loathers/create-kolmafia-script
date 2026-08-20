@@ -31,33 +31,34 @@ function whichPm(): string | undefined {
   return name;
 }
 
-export function getPmAndVersion(requested?: string): {
-  packageManager: string;
-  packageManagerVersion: string;
-} {
+export function getPmAndVersion(
+  requested?: string,
+): { packageManager: string; packageManagerVersion: string } | undefined {
   const fallback: PackageManager = "yarn";
   const [name, version] = requested?.split("@") ?? [];
-  const supplied = name ?? whichPm();
 
   const packageManager =
-    supplied ??
+    name ||
+    whichPm() ||
     (() => {
       printWarning(
         `Falling back to ${chalk.italic(fallback)}; ` +
-          `for a different package manager, use ${chalk.italic("--node-pm}")}.`,
+          `for a different package manager, use ${chalk.italic("--node-pm")}.`,
       );
       return fallback;
     })();
 
   const packageManagerVersion =
-    version ??
-    (isPmSupported(packageManager)
-      ? supportedPMs[packageManager]
-      : (() => {
-          throw new Error(
-            `Version needed for unsupported package manager: --node-pm=${packageManager}@VERSION`,
-          );
-        })());
+    version || (isPmSupported(packageManager) ? supportedPMs[packageManager] : undefined);
+
+  if (!packageManagerVersion) {
+    console.error(
+      `No default version is known for ${chalk.italic(packageManager)}, so you must give one: ` +
+        `--node-pm=${packageManager}@VERSION`,
+    );
+    return undefined;
+  }
+
   return { packageManager, packageManagerVersion };
 }
 

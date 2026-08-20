@@ -128,7 +128,9 @@ export async function create() {
     .usage("$0 <name> [args]")
     .interactive(yargsOption as any)) as Record<keyof typeof yargsOption, any>;
 
-  const { packageManager, packageManagerVersion } = getPmAndVersion(args["node-pm"]);
+  const pm = getPmAndVersion(args["node-pm"]);
+  if (!pm) return;
+  const { packageManager, packageManagerVersion } = pm;
 
   const ignoredProps = ["name", "interactive", "node-pm", "nodePm"];
   const filteredArgs = Object.fromEntries(
