@@ -18,7 +18,9 @@ async function prepareDirectory(filePath: string) {
   try {
     const target = path.dirname(filePath);
     await fs.mkdir(target, { recursive: true });
-  } catch {}
+  } catch {
+    /* Ignore errors */
+  }
 }
 
 async function* walk(dir: string): AsyncGenerator<string> {

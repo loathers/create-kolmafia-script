@@ -99,7 +99,7 @@ export async function installDeps(rootDir: string, pm: PackageManager) {
   try {
     await execa(command, args, { stdio: "inherit", shell: true, cwd: rootDir });
   } catch (err) {
-    throw new Error(`Failed to install dependencies: ${err}`);
+    throw new Error(`Failed to install dependencies: ${err}`, { cause: err });
   }
 }
 
@@ -140,6 +140,6 @@ export async function addDeps(
   try {
     await execa(command, args, { stdio: "inherit", shell: true, cwd: rootDir });
   } catch (err) {
-    throw new Error(`Failed to add dependencies: ${err}`);
+    throw new Error(`Failed to add dependencies: ${err}`, { cause: err });
   }
 }

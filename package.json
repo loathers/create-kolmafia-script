@@ -8,7 +8,8 @@
     "clean": "shx rm -rf dist",
     "dev": "tsup src/cli.ts --watch",
     "prepack": "npm run clean && npm run build",
-    "format": "prettier --write .",
+    "format": "eslint src --fix --ext .ts && prettier --write .",
+    "lint": "eslint src --ext .ts && prettier --check .",
     "test": "vitest run"
   },
   "repository": {
@@ -22,13 +23,18 @@
     "template"
   ],
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^25.3.0",
     "@types/yargs-interactive": "^2.1.6",
+    "eslint": "^10.8.1",
+    "eslint-config-prettier": "^10.1.8",
+    "jiti": "^2.7.0",
     "prettier": "^3.8.1",
     "shx": "^0.4.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.67.0",
     "vitest": "^4.1.11"
   },
   "license": "MIT",
