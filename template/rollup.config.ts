@@ -59,7 +59,9 @@ const baseSettings = {
     : undefined,
 } satisfies RollupOptions;
 
-export default [{ "{{kebab name}}": "src/main.ts" }].map((input) => ({
+const entry = "{{kebab name}}";
+
+export default [{ [entry]: "src/main.ts" }].map((input) => ({
   input,
   ...baseSettings,
 }));
