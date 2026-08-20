@@ -6,8 +6,8 @@ import spdxLicenseList from "spdx-license-list/full.js";
 import yargsInteractive from "yargs-interactive";
 
 import { copy } from "./copy.js";
-import { addDeps, configureYarn, installDeps, whichPm } from "./npm.js";
-import { getGitUser, initGit, isOccupied, toContact } from "./utils.js";
+import { addDeps, configureYarn, installDeps, getPmAndVersion, isPmSupported } from "./npm.js";
+import { getGitUser, initGit, isOccupied, toContact, printWarning } from "./utils.js";
 
 const templateDir = path.resolve(import.meta.dirname, "..", "template");
 
@@ -93,9 +93,10 @@ export async function create() {
       prompt: "never",
     },
     "node-pm": {
-      type: "list",
-      describe: "Package manager to use for installing packages from npm. Only tested with yarn",
-      choices: ["npm", "yarn", "pnpm"],
+      type: "input",
+      describe:
+        "(format: PackageManager[@ExactVersion]) Package manager to use for installing npm packages. " +
+        "Only tested with yarn; may work with npm and pnpm",
       default: undefined, // We'll try to guess pm later
       prompt: "never",
     },
@@ -127,7 +128,9 @@ export async function create() {
     .usage("$0 <name> [args]")
     .interactive(yargsOption as any)) as Record<keyof typeof yargsOption, any>;
 
-  const packageManager = args["node-pm"] ?? whichPm();
+  const pm = getPmAndVersion(args["node-pm"]);
+  if (!pm) return;
+  const { packageManager, packageManagerVersion } = pm;
 
   const ignoredProps = ["name", "interactive", "node-pm", "nodePm"];
   const filteredArgs = Object.fromEntries(
@@ -154,6 +157,7 @@ export async function create() {
       ...answers,
       year,
       packageManager,
+      packageManagerVersion,
     },
   });
 
@@ -182,7 +186,15 @@ export async function create() {
     await configureYarn(packageDir);
   }
 
-  if (!args["skip-install"]) {
+  if (args["skip-install"]) {
+    // No need to do anything in this case
+  } else if (!isPmSupported(packageManager)) {
+    printWarning(
+      "Package manager",
+      packageManager,
+      "is not supported; you will need to install it yourself.",
+    );
+  } else {
     const installNpmPackage = async (
       pkg: string | string[],
       isDev: boolean = false,

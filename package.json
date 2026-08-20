@@ -8,7 +8,8 @@
     "clean": "shx rm -rf dist",
     "dev": "tsup src/cli.ts --watch",
     "prepack": "npm run clean && npm run build",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "vitest run"
   },
   "repository": {
     "type": "git",
@@ -27,7 +28,8 @@
     "prettier": "^3.8.1",
     "shx": "^0.4.0",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
   },
   "license": "MIT",
   "dependencies": {
