@@ -30,45 +30,6 @@ export async function configureYarn(rootDir: string) {
   });
 }
 
-export async function initPackage(
-  rootDir: string,
-  {
-    pm,
-  }: {
-    pm: PackageManager;
-  },
-) {
-  let command: string;
-  let args: string[];
-
-  switch (pm) {
-    case "npm": {
-      command = "npm";
-      args = ["init", "-y"];
-      break;
-    }
-    case "yarn": {
-      command = "yarnpkg";
-      args = ["init", "-y"];
-      break;
-    }
-    case "pnpm": {
-      command = "pnpm";
-      args = ["init", "-y"];
-      process.chdir(rootDir);
-      break;
-    }
-  }
-
-  printCommand(command, ...args);
-
-  try {
-    await execa(command, args, { stdio: "inherit", shell: true, cwd: rootDir });
-  } catch (err) {
-    throw new Error(`Failed to install dependencies: ${err}`);
-  }
-}
-
 export async function installDeps(rootDir: string, pm: PackageManager) {
   let command: string;
   let args: string[];
@@ -122,12 +83,12 @@ export async function addDeps(
     }
     case "yarn": {
       command = "yarnpkg";
-      args = ["add", ...deps, isDev ? "-D" : ""];
+      args = ["add", ...deps, ...(isDev ? ["-D"] : [])];
       break;
     }
     case "pnpm": {
       command = "pnpm";
-      args = ["add", "--dir", rootDir, ...deps, isDev ? "-D" : ""];
+      args = ["add", ...deps, ...(isDev ? ["-D"] : [])];
       break;
     }
   }
