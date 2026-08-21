@@ -178,8 +178,12 @@ export async function create() {
       packageManagerVersion,
       ciInstallCommand: getCiInstallCommand(packageManager),
     },
-    // Skip copying node_modules, our yarn.lock, and maybe the .github directory
-    ignored: ["node_modules/**", "yarn.lock", ...(args["setup-github"] ? [] : [".github/**"])],
+    ignored: [
+      "node_modules/**",
+      "yarn.lock",
+      ".npmignore",
+      ...(args["setup-github"] ? [] : [".github/**"]),
+    ],
   });
 
   // create license file
