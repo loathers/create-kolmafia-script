@@ -7,7 +7,14 @@ import spdxLicenseList from "spdx-license-list/full.js";
 import yargsInteractive from "yargs-interactive";
 
 import { copy } from "./copy.js";
-import { addDeps, configureYarn, installDeps, getPmAndVersion, isPmSupported } from "./npm.js";
+import {
+  addDeps,
+  configureYarn,
+  installDeps,
+  getCiInstallCommand,
+  getPmAndVersion,
+  isPmSupported,
+} from "./packageManager.js";
 import { getGitUser, initGit, isOccupied, toContact, printWarning } from "./utils.js";
 
 const templateDir = path.resolve(import.meta.dirname, "..", "template");
@@ -33,6 +40,9 @@ export interface Answers {
 
   /** Package license (e.g. "MIT") */
   license: string;
+
+  /** Whether to set up GitHub-specific repository features */
+  "setup-github": boolean;
 
   libram: boolean;
 
@@ -101,6 +111,12 @@ export async function create() {
       default: undefined, // We'll try to guess pm later
       prompt: "never",
     },
+    "setup-github": {
+      type: "confirm",
+      describe: "Include GitHub-specific files, such as the auto-deploy workflow?",
+      default: true,
+      prompt: "if-no-arg",
+    },
     "skip-git": {
       type: "confirm",
       describe: "Skip initializing git repository",
@@ -160,7 +176,14 @@ export async function create() {
       year,
       packageManager,
       packageManagerVersion,
+      ciInstallCommand: getCiInstallCommand(packageManager),
     },
+    ignored: [
+      "node_modules/**",
+      "yarn.lock",
+      ".npmignore",
+      ...(args["setup-github"] ? [] : [".github/**"]),
+    ],
   });
 
   // create license file

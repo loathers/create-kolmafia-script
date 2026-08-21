@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getPmAndVersion, supportedPMs } from "./npm.js";
+import { getCiInstallCommand, getPmAndVersion, supportedPMs } from "./packageManager.js";
 
 const originalUserAgent = process.env.npm_config_user_agent;
 
@@ -66,5 +66,19 @@ describe("getPmAndVersion", () => {
 
   it("refuses a manager it knows nothing about when no version is given", () => {
     expect(getPmAndVersion("bun")).toBeUndefined();
+  });
+});
+
+describe("getCiInstallCommand", () => {
+  it.each([
+    ["yarn", "yarn install --immutable"],
+    ["npm", "npm ci"],
+    ["pnpm", "pnpm install --frozen-lockfile"],
+  ])("installs from the lockfile alone with %s", (packageManager, expected) => {
+    expect(getCiInstallCommand(packageManager)).toBe(expected);
+  });
+
+  it("guesses at a manager it knows nothing about", () => {
+    expect(getCiInstallCommand("bun")).toBe("bun install --frozen-lockfile");
   });
 });

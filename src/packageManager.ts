@@ -14,6 +14,19 @@ export function isPmSupported(packageManager: string): packageManager is Package
   return packageManager in supportedPMs;
 }
 
+// Install exactly what the lockfile says, failing rather than updating it.
+const ciInstallCommands = {
+  yarn: "yarn install --immutable",
+  pnpm: "pnpm install --frozen-lockfile",
+  npm: "npm ci",
+} as const satisfies Record<PackageManager, string>;
+
+export function getCiInstallCommand(packageManager: string) {
+  return isPmSupported(packageManager)
+    ? ciInstallCommands[packageManager]
+    : `${packageManager} install --frozen-lockfile`;
+}
+
 // License for `whichPm`
 // The MIT License (MIT)
 // Copyright (c) 2017-2022 Zoltan Kochan <z@kochan.io>

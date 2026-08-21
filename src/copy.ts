@@ -35,15 +35,12 @@ export async function copy(args: {
   targetDir: string;
   sourceDir: string;
   view: Record<string, string | boolean | number>;
+  ignored: string[];
 }) {
   for await (const sourceFile of walk(args.sourceDir)) {
     const relativePath = path.relative(args.sourceDir, sourceFile);
-    // Don't bring over node_modules or our yarn.lock (since it won't have the right package name)
-    if (relativePath.startsWith("node_modules") || relativePath === "yarn.lock") continue;
-    const targetPath = format(slash(path.resolve(args.targetDir, relativePath)), args.view).replace(
-      new RegExp(`${path.sep}gitignore$`, "g"),
-      `${path.sep}.gitignore`,
-    );
+    if (args.ignored.some((glob) => path.matchesGlob(relativePath, glob))) continue;
+    const targetPath = format(slash(path.resolve(args.targetDir, relativePath)), args.view);
     await prepareDirectory(targetPath);
 
     const sourceData = await fs.readFile(sourceFile);
