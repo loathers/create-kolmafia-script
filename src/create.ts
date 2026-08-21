@@ -7,7 +7,14 @@ import spdxLicenseList from "spdx-license-list/full.js";
 import yargsInteractive from "yargs-interactive";
 
 import { copy } from "./copy.js";
-import { addDeps, configureYarn, installDeps, getPmAndVersion, isPmSupported } from "./npm.js";
+import {
+  addDeps,
+  configureYarn,
+  installDeps,
+  getCiInstallCommand,
+  getPmAndVersion,
+  isPmSupported,
+} from "./npm.js";
 import { getGitUser, initGit, isOccupied, toContact, printWarning } from "./utils.js";
 
 const templateDir = path.resolve(import.meta.dirname, "..", "template");
@@ -169,6 +176,7 @@ export async function create() {
       year,
       packageManager,
       packageManagerVersion,
+      ciInstallCommand: getCiInstallCommand(packageManager),
     },
     // Skip copying node_modules, our yarn.lock, and maybe the .github directory
     ignored: ["node_modules/**", "yarn.lock", ...(args["setup-github"] ? [] : [".github/**"])],

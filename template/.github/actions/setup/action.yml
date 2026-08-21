@@ -1,5 +1,5 @@
 name: "Setup project"
-description: "Set up Node, Yarn, and dependencies"
+description: "Set up Node and install dependencies"
 inputs:
   node-version:
     description: "The version of Node.js to use"
@@ -18,14 +18,5 @@ runs:
         node-version: $\{{ inputs.node-version }}
 
     - name: Install dependencies
-      {{!--
-        Handlebars doesn't have a `switch` block; this is the closest option I could figure out.
-        Adapted from https://github.com/handlebars-lang/handlebars.js/issues/927#issuecomment-886163779
-      --}}
-      {{#if true}}
-      {{~#*inline "yarn"}}--immutable{{/inline~}}
-      {{~#*inline "npm"}}--ci{{/inline~}}
-      {{!-- We use --frozen-lockfile for PNPM and as the default --}}
-      run: {{packageManager}} install {{#> (lookup . "packageManager")}}--frozen-lockfile{{/undefined}}
-      {{/if}}
+      run: {{ciInstallCommand}}
       shell: bash
