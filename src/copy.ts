@@ -40,10 +40,7 @@ export async function copy(args: {
   for await (const sourceFile of walk(args.sourceDir)) {
     const relativePath = path.relative(args.sourceDir, sourceFile);
     if (args.ignored.some((glob) => path.matchesGlob(relativePath, glob))) continue;
-    const targetPath = format(slash(path.resolve(args.targetDir, relativePath)), args.view).replace(
-      new RegExp(`${path.sep}gitignore$`, "g"),
-      `${path.sep}.gitignore`,
-    );
+    const targetPath = format(slash(path.resolve(args.targetDir, relativePath)), args.view);
     await prepareDirectory(targetPath);
 
     const sourceData = await fs.readFile(sourceFile);
