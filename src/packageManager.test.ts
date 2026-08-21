@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getCiInstallCommand, getPmAndVersion, supportedPMs } from "./npm.js";
+import { getCiInstallCommand, getPmAndVersion, supportedPMs } from "./packageManager.js";
 
 const originalUserAgent = process.env.npm_config_user_agent;
 

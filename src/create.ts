@@ -14,7 +14,7 @@ import {
   getCiInstallCommand,
   getPmAndVersion,
   isPmSupported,
-} from "./npm.js";
+} from "./packageManager.js";
 import { getGitUser, initGit, isOccupied, toContact, printWarning } from "./utils.js";
 
 const templateDir = path.resolve(import.meta.dirname, "..", "template");
