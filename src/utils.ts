@@ -15,8 +15,8 @@ export async function isOccupied(dirname: string) {
 
 export async function getGitUser(): Promise<{ name?: string; email?: string }> {
   try {
-    const { stdout: name } = await execa`git config --global user.name`;
-    const { stdout: email } = await execa`git config --global user.email`;
+    const { stdout: name } = await execa`git config user.name`;
+    const { stdout: email } = await execa`git config user.email`;
     return { name, email };
   } catch {
     return {};
