@@ -1,8 +1,10 @@
+import { text } from "@clack/prompts";
 import chalk from "chalk";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import yargsInteractive from "yargs-interactive";
+
+import { stopIfCancelled } from "./prompt.js";
 
 async function installLinux() {
   installToPath(path.join(os.homedir(), ".kolmafia"));
@@ -63,26 +65,21 @@ export async function install() {
       return await installLinux();
     case "darwin":
       return await installMac();
-    default:
-      yargsInteractive()
-        .usage("")
-        .interactive({
-          interactive: { default: true },
-          install: {
-            type: "input",
-            describe: `The location of your KoLmafia data could not be detected.\nPlease input the directory that contains (e.g.) your ${chalk.italic(
-              "scripts",
-            )} folder`,
-            prompt: "if-no-arg",
-          },
-        })
-        .then(async ({ installPath }) => {
-          if (installPath === undefined) {
-            console.error("You must specify a path to your mafia directory");
-            process.exit(1);
-          }
-          await installToPath(installPath);
-        });
-      break;
+    default: {
+      const installPath = stopIfCancelled(
+        await text({
+          message: `The location of your KoLmafia data could not be detected.\nPlease input the directory that contains (e.g.) your ${chalk.italic(
+            "scripts",
+          )} folder`,
+        }),
+      );
+
+      if (!installPath) {
+        console.error("You must specify a path to your mafia directory");
+        process.exit(1);
+      }
+
+      return await installToPath(installPath);
+    }
   }
 }
