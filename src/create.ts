@@ -111,17 +111,17 @@ export async function create(entrypoint: string) {
     license: flags.license,
     "setup-github": await askConfirm(
       flags["setup-github"],
-      "Include GitHub-specific files, such as the auto-deploy workflow?",
+      "Include GitHub files, such as the auto-deploy workflow?",
       true,
     ),
     libram: await askConfirm(
       flags.libram,
-      `Would you like to install ${chalk.italic("libram")} as a dependency? This is a general purpose library for KoLmafia scripting that you might find useful.`,
+      `Install ${chalk.italic("libram")}? (a general purpose library for KoLmafia scripting)`,
       true,
     ),
     grimoire: await askConfirm(
       flags.grimoire,
-      `Would you like to install ${chalk.italic("grimoire")} as a dependency? This library provides a set of tools for writing adventuring scripts.`,
+      `Install ${chalk.italic("grimoire")}? (a set of tools for writing adventuring scripts)`,
       false,
     ),
   };
