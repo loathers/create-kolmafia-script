@@ -144,6 +144,7 @@ export async function create(entrypoint: string) {
       "yarn.lock",
       ".npmignore",
       ...(answers["setup-github"] ? [] : [".github/**"]),
+      ...(packageManager === "pnpm" ? [] : ["pnpm-workspace.yaml"]),
     ],
   });
 
