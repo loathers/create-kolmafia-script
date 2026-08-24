@@ -26,7 +26,6 @@
     "@eslint/js": "^10.0.1",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^25.3.0",
-    "@types/yargs-interactive": "^2.1.6",
     "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
     "jiti": "^2.7.0",
@@ -39,17 +38,17 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@clack/prompts": "^1.7.0",
     "chalk": "^5.6.2",
     "change-case": "^5.4.4",
-    "dedent": "^1.7.1",
     "execa": "^9.6.1",
     "handlebars": "^4.7.8",
-    "spdx-license-list": "^6.11.0",
-    "yargs-interactive": "^3.0.1"
+    "pargs": "^1.4.2",
+    "spdx-license-list": "^6.11.0"
   },
   "packageManager": "yarn@4.6.0",
   "engines": {
-    "node": ">=22.5"
+    "node": "^22.20 || ^24.10 || >= 25"
   },
   "engineStrict": true
 }

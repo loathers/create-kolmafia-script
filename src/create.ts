@@ -1,11 +1,11 @@
+import { confirm, intro, log, outro, text } from "@clack/prompts";
 import chalk from "chalk";
-import dedent from "dedent";
 import { ExecaError } from "execa";
 import fs from "node:fs/promises";
 import path from "node:path";
 import spdxLicenseList from "spdx-license-list/full.js";
-import yargsInteractive from "yargs-interactive";
 
+import { parseCliArgs } from "./args.js";
 import { copy } from "./copy.js";
 import {
   addDeps,
@@ -15,6 +15,7 @@ import {
   getPmAndVersion,
   isPmSupported,
 } from "./packageManager.js";
+import { isInteractive, resolve } from "./prompt.js";
 import { getGitUser, initGit, isOccupied, toContact, printWarning } from "./utils.js";
 
 const templateDir = path.resolve(import.meta.dirname, "..", "template");
@@ -49,131 +50,91 @@ export interface Answers {
   grimoire: boolean;
 }
 
-export async function create() {
-  console.log(
-    `🍸📜 Welcome to ${chalk.bold(
-      "create-kolmafia-script",
-    )}! We're going to ask a few questions to get you started`,
-  );
+export async function create(entrypoint: string) {
+  const { values: flags, positionals, errors, help } = await parseCliArgs(entrypoint);
 
-  const firstArg = process.argv[2];
-  if (firstArg === undefined) {
-    console.error(`You must provide a directory for your script`);
-    return;
-  }
+  // help() prints the usage and whatever pargs objected to, which covers a
+  // missing directory as well, since it is declared as a required positional.
+  if (flags.help || errors.length > 0) return await help();
 
-  const useCurrentDirectory = firstArg === ".";
-
-  const name = useCurrentDirectory ? path.basename(process.cwd()) : firstArg;
-  const packageDir = useCurrentDirectory ? process.cwd() : path.resolve(firstArg);
+  const target = positionals[0];
+  const packageDir = target === "." ? process.cwd() : path.resolve(target);
 
   if (await isOccupied(packageDir)) {
     console.error(`${packageDir} is not an empty directory.`);
+    process.exitCode = 1;
     return;
   }
 
-  const availableLicenses = [...Object.keys(spdxLicenseList), "UNLICENSED"];
+  const name = path.basename(packageDir);
 
-  const gitUser = await getGitUser();
+  const interactive = isInteractive(flags.interactive);
 
-  const yargsOption: yargsInteractive.Option = {
-    interactive: { default: true },
-    description: {
-      type: "input",
-      describe: "Description",
-      default: "My groovy new script for KoLmafia",
-      prompt: "if-no-arg",
-    },
-    author: {
-      type: "input",
-      describe: "Author name",
-      default: gitUser.name ?? "Your name",
-      prompt: "if-no-arg",
-    },
-    email: {
-      type: "input",
-      describe: "Author email",
-      default: gitUser.email ?? "Your email",
-      prompt: "if-no-arg",
-    },
-    license: {
-      type: "list",
-      describe: "License",
-      choices: availableLicenses,
-      default: "MIT",
-      prompt: "never",
-    },
-    "node-pm": {
-      type: "input",
-      describe:
-        "(format: PackageManager[@ExactVersion]) Package manager to use for installing npm packages. " +
-        "Only tested with yarn; may work with npm and pnpm",
-      default: undefined, // We'll try to guess pm later
-      prompt: "never",
-    },
-    "setup-github": {
-      type: "confirm",
-      describe: "Include GitHub-specific files, such as the auto-deploy workflow?",
-      default: true,
-      prompt: "if-no-arg",
-    },
-    "skip-git": {
-      type: "confirm",
-      describe: "Skip initializing git repository",
-      prompt: "never",
-    },
-    "skip-install": {
-      type: "confirm",
-      describe: "Skip installing package dependencies",
-      prompt: "never",
-    },
-    libram: {
-      type: "confirm",
-      describe: `Would you like to install ${chalk.italic("libram")} as a dependency? This is a general purpose library for KoLmafia scripting that you might find useful.`,
-      default: true,
-      prompt: "if-no-arg",
-    },
-    grimoire: {
-      type: "confirm",
-      describe: `Would you like to install ${chalk.italic("grimoire")} as a dependency? This library provides a set of tools for writing adventuring scripts.`,
-      default: false,
-      prompt: "if-no-arg",
-    },
-  };
+  const askText = (given: string | undefined, message: string, fallback: string) =>
+    resolve({
+      given,
+      fallback,
+      interactive,
+      ask: () => text({ message, placeholder: fallback, defaultValue: fallback }),
+    });
 
-  const args = (await yargsInteractive()
-    .usage("$0 <name> [args]")
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .interactive(yargsOption)) as Record<keyof typeof yargsOption, any>;
+  const askConfirm = (given: boolean | undefined, message: string, fallback: boolean) =>
+    resolve({
+      given,
+      fallback,
+      interactive,
+      ask: () => confirm({ message, initialValue: fallback }),
+    });
 
-  const pm = getPmAndVersion(args["node-pm"]);
+  intro(`🍸📜 ${chalk.bold("create-kolmafia-script")}`);
+
+  const pm = getPmAndVersion(flags["node-pm"]);
   if (!pm) return;
   const { packageManager, packageManagerVersion } = pm;
 
-  const ignoredProps = ["name", "interactive", "node-pm", "nodePm"];
-  const filteredArgs = Object.fromEntries(
-    Object.entries(args).filter((arg) => arg[0].match(/^[^$_]/) && !ignoredProps.includes(arg[0])),
-  ) as Answers;
+  const gitUser = await getGitUser();
 
-  const year = new Date().getFullYear();
-  const contact = toContact(args["author"], args["email"]);
+  const description = await askText(
+    flags.description,
+    "Description",
+    "My groovy new script for KoLmafia",
+  );
+  const author = await askText(flags.author, "Author name", gitUser.name ?? "Your name");
+  const email = await askText(flags.email, "Author email", gitUser.email ?? "Your email");
 
-  // construct answers
-  const answers = {
-    ...filteredArgs,
+  const answers: Answers = {
     name,
-    contact,
+    description,
+    author,
+    email,
+    contact: toContact(author, email),
+    license: flags.license,
+    "setup-github": await askConfirm(
+      flags["setup-github"],
+      "Include GitHub files, such as the auto-deploy workflow?",
+      true,
+    ),
+    libram: await askConfirm(
+      flags.libram,
+      `Install ${chalk.italic("libram")}? (a general purpose library for KoLmafia scripting)`,
+      true,
+    ),
+    grimoire: await askConfirm(
+      flags.grimoire,
+      `Install ${chalk.italic("grimoire")}? (a set of tools for writing adventuring scripts)`,
+      false,
+    ),
   };
 
   // copy files from the template folder
-  console.log(`\nCreating a new package in ${chalk.green(packageDir)}.`);
+  log.step(`Creating a new package in ${chalk.green(packageDir)}.`);
 
   await copy({
     sourceDir: templateDir,
     targetDir: packageDir,
     view: {
       ...answers,
-      year,
+      year: new Date().getFullYear(),
       packageManager,
       packageManagerVersion,
       ciInstallCommand: getCiInstallCommand(packageManager),
@@ -182,7 +143,7 @@ export async function create() {
       "node_modules/**",
       "yarn.lock",
       ".npmignore",
-      ...(args["setup-github"] ? [] : [".github/**"]),
+      ...(answers["setup-github"] ? [] : [".github/**"]),
     ],
   });
 
@@ -196,10 +157,10 @@ export async function create() {
     // do not generate LICENSE
   }
 
-  // init git if option skipGitInit or arg --skip-git are not set
-  if (!args["skip-git"]) {
+  // init git if arg --skip-git is not set
+  if (!flags["skip-git"]) {
     try {
-      console.log("\nInitializing a git repository");
+      log.step("Initializing a git repository");
       await initGit(packageDir);
     } catch (err) {
       if (err instanceof ExecaError && err.exitCode === 127) return; // no git available
@@ -211,7 +172,7 @@ export async function create() {
     await configureYarn(packageDir);
   }
 
-  if (args["skip-install"]) {
+  if (flags["skip-install"]) {
     // No need to do anything in this case
   } else if (!isPmSupported(packageManager)) {
     printWarning(
@@ -230,23 +191,20 @@ export async function create() {
       });
     };
 
-    console.log(`\nInstalling dependencies using ${packageManager}`);
+    log.step(`Installing dependencies using ${packageManager}`);
     await installDeps(packageDir, packageManager);
 
     if (answers.libram) {
-      console.log(`\nInstalling ${chalk.italic("libram")} as a dependency`);
+      log.step(`Installing ${chalk.italic("libram")} as a dependency`);
       await installNpmPackage("libram");
     }
     if (answers.grimoire) {
-      console.log(`\nInstalling ${chalk.italic("grimoire")} as a dependency`);
+      log.step(`Installing ${chalk.italic("grimoire")} as a dependency`);
       await installNpmPackage("grimoire-kolmafia");
     }
   }
 
-  console.log(`\nSuccessfully created ${chalk.bold.cyan(packageDir)}\n`);
-
-  console.log(dedent`
-    Your KoLmafia script has been successfully bootstrapped!
-    Once you've navigated to the directory you find more information in the readme!
-  `);
+  outro(
+    `Successfully created ${chalk.bold.cyan(packageDir)}\nOnce you've navigated to the directory you find more information in the readme!`,
+  );
 }

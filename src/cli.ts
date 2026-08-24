@@ -10,7 +10,7 @@ function main() {
     case "--install":
       return install();
     default:
-      return create();
+      return create(import.meta.filename);
   }
 }
 
