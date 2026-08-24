@@ -1,0 +1,6 @@
+# pnpm asks to be told which dependencies may run install scripts, and refuses to
+# install until it has been. libram and grimoire both bring in core-js, whose
+# postinstall only prints a funding notice, so there is nothing to gain by
+# letting it run.
+allowBuilds:
+  core-js: false

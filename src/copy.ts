@@ -31,6 +31,26 @@ async function* walk(dir: string): AsyncGenerator<string> {
   }
 }
 
+/**
+ * What not to bring over from the template: our own artefacts, plus the pieces
+ * that only make sense for some of the answers. Anything package-manager
+ * specific has to be named here, or it would follow everyone home.
+ */
+export function templateIgnores({
+  setupGithub,
+  packageManager,
+}: {
+  setupGithub: boolean;
+  packageManager: string;
+}) {
+  const ignored = ["node_modules/**", "yarn.lock", ".npmignore"];
+
+  if (!setupGithub) ignored.push(".github/**");
+  if (packageManager !== "pnpm") ignored.push("pnpm-workspace.yaml");
+
+  return ignored;
+}
+
 export async function copy(args: {
   targetDir: string;
   sourceDir: string;

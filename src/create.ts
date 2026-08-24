@@ -6,7 +6,7 @@ import path from "node:path";
 import spdxLicenseList from "spdx-license-list/full.js";
 
 import { parseCliArgs } from "./args.js";
-import { copy } from "./copy.js";
+import { copy, templateIgnores } from "./copy.js";
 import {
   addDeps,
   configureYarn,
@@ -139,12 +139,7 @@ export async function create(entrypoint: string) {
       packageManagerVersion,
       ciInstallCommand: getCiInstallCommand(packageManager),
     },
-    ignored: [
-      "node_modules/**",
-      "yarn.lock",
-      ".npmignore",
-      ...(answers["setup-github"] ? [] : [".github/**"]),
-    ],
+    ignored: templateIgnores({ setupGithub: answers["setup-github"], packageManager }),
   });
 
   // create license file
