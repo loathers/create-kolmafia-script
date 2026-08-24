@@ -1465,6 +1465,7 @@ __metadata:
     execa: "npm:^9.6.1"
     handlebars: "npm:^4.7.8"
     jiti: "npm:^2.7.0"
+    pargs: "npm:^1.4.2"
     prettier: "npm:^3.8.1"
     shx: "npm:^0.4.0"
     spdx-license-list: "npm:^6.11.0"
@@ -2970,6 +2971,13 @@ __metadata:
   version: 1.0.0
   resolution: "package-json-from-dist@npm:1.0.0"
   checksum: 10c0/e3ffaf6ac1040ab6082a658230c041ad14e72fabe99076a2081bb1d5d41210f11872403fc09082daf4387fc0baa6577f96c9c0e94c90c394fd57794b66aa4033
+  languageName: node
+  linkType: hard
+
+"pargs@npm:^1.4.2":
+  version: 1.4.2
+  resolution: "pargs@npm:1.4.2"
+  checksum: 10c0/7f187069e319639c8fc7db51329ea00555d94608698334fa3375b240ee07c228f2fb8b944cb81a09d197be2241feceb07e961a76780b8f676dfd65fff6d1a1da
   languageName: node
   linkType: hard
 

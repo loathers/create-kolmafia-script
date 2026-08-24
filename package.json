@@ -43,11 +43,12 @@
     "change-case": "^5.4.4",
     "execa": "^9.6.1",
     "handlebars": "^4.7.8",
+    "pargs": "^1.4.2",
     "spdx-license-list": "^6.11.0"
   },
   "packageManager": "yarn@4.6.0",
   "engines": {
-    "node": ">=22.5"
+    "node": "^22.20 || ^24.10 || >= 25"
   },
   "engineStrict": true
 }

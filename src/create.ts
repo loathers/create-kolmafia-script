@@ -5,7 +5,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import spdxLicenseList from "spdx-license-list/full.js";
 
-import { parseCliArgs, usage } from "./args.js";
+import { parseCliArgs } from "./args.js";
 import { copy } from "./copy.js";
 import {
   addDeps,
@@ -50,39 +50,23 @@ export interface Answers {
   grimoire: boolean;
 }
 
-export async function create() {
-  let parsed;
-  try {
-    parsed = parseCliArgs(process.argv.slice(2));
-  } catch (err) {
-    console.error(err instanceof Error ? err.message : err);
-    console.error(`\n${usage}`);
-    return;
-  }
+export async function create(entrypoint: string) {
+  const { values: flags, positionals, errors, help } = await parseCliArgs(entrypoint);
 
-  const { values: flags, positionals } = parsed;
-
-  if (flags.help) {
-    console.log(usage);
-    return;
-  }
+  // help() prints the usage and whatever pargs objected to, which covers a
+  // missing directory as well, since it is declared as a required positional.
+  if (flags.help || errors.length > 0) return await help();
 
   const target = positionals[0];
-  if (target === undefined) {
-    console.error(`You must provide a directory for your script\n`);
-    console.error(usage);
-    return;
-  }
-
-  const useCurrentDirectory = target === ".";
-
-  const name = useCurrentDirectory ? path.basename(process.cwd()) : target;
-  const packageDir = useCurrentDirectory ? process.cwd() : path.resolve(target);
+  const packageDir = target === "." ? process.cwd() : path.resolve(target);
 
   if (await isOccupied(packageDir)) {
     console.error(`${packageDir} is not an empty directory.`);
+    process.exitCode = 1;
     return;
   }
+
+  const name = path.basename(packageDir);
 
   const interactive = isInteractive(flags.interactive);
 
@@ -124,7 +108,7 @@ export async function create() {
     author,
     email,
     contact: toContact(author, email),
-    license: flags.license ?? "MIT",
+    license: flags.license,
     "setup-github": await askConfirm(
       flags["setup-github"],
       "Include GitHub-specific files, such as the auto-deploy workflow?",
