@@ -110,3 +110,8 @@ export async function addDeps(
   const args: string[] = ["add", ...deps, ...(isDev ? ["-D"] : [])];
   await runPmCommand(rootDir, "add dependencies", pm, args);
 }
+
+export async function runScript(rootDir: string, script: string[], pm: PackageManager) {
+  const args = ["run", ...script];
+  await runPmCommand(rootDir, "run script", pm, args);
+}
