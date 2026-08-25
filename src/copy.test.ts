@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { templateIgnores } from "./copy.js";
+import { templateIgnores, _exportedForTesting } from "./copy.js";
 
 /** copy() drops a file when any of the globs match it, so ask the same question. */
 function isIgnored(relativePath: string, ignored: string[]) {
@@ -59,5 +59,36 @@ describe("templateIgnores", () => {
     ]) {
       expect(isIgnored(wanted, ignored)).toBe(false);
     }
+  });
+});
+
+// This is a type guard to let us destructure _exportedForTesting
+// If it fails, there's something wrong with the tests, not the code
+expect.assert(_exportedForTesting, "copy.ts did not export testing functions");
+const { shouldAppend } = _exportedForTesting;
+
+describe("shouldAppend", () => {
+  it("appends to .prettierignore", () => {
+    expect(shouldAppend(path.join("target-project", ".prettierignore"))).toBe(true);
+  });
+  it("appends to a subdirectory's .gitignore", () => {
+    expect(shouldAppend(path.join("target-project", "subdirectory", ".gitignore"))).toBe(true);
+  });
+  it("does not append to non-dot files ending in ignore", () => {
+    expect(
+      shouldAppend(path.join("target-project", ".github", "actions", "random-file-to-ignore")),
+    ).toBe(false);
+  });
+  it("does not take the current directory to mean dotfile", () => {
+    expect(shouldAppend(path.join(".", ".github", "actions", "random-file-to-ignore"))).toBe(false);
+  });
+  it("accepts / as a path separator", () => {
+    // This should work even on Windows.
+    expect(shouldAppend("./.github/actions/random-file-to-ignore")).toBe(false);
+  });
+  it("does not append to other files", () => {
+    expect(shouldAppend(path.join("target-project", ".github", "workflows", "deploy.yml"))).toBe(
+      false,
+    );
   });
 });
