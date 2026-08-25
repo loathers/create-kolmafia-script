@@ -6,7 +6,7 @@
   "license": "{{license}}",
   "scripts": {
     "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
-    "format": "eslint src --fix --ext .ts && NODE_OPTIONS=\"--experimental-strip-types\" prettier --write .",
+    "format": "eslint src --fix --ext .ts && NODE_OPTIONS=\"--experimental-strip-types\" prettier --write --list-different .",
     "lint": "eslint src --ext .ts &&  NODE_OPTIONS=\"--experimental-strip-types\" prettier --check .",
     "watch": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript --watch",
     "install-mafia": "npm run build && create-kolmafia-script --install"
