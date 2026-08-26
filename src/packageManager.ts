@@ -80,7 +80,7 @@ async function runPmCommand(rootDir: string, action: string, pm: PackageManager,
   printCommand(command, ...args);
 
   try {
-    await execa(command, args, { stdio: "inherit", shell: true, cwd: rootDir });
+    await execa(command, args, { stdio: "inherit", cwd: rootDir });
   } catch (err) {
     throw new Error(`Failed to ${action}: ${err}`, { cause: err });
   }

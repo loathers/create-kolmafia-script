@@ -25,7 +25,7 @@ export async function getGitUser(): Promise<{ name?: string; email?: string }> {
 
 export async function initGit(root: string) {
   printCommand("git init");
-  await execa("git init", { shell: true, cwd: root });
+  await execa({ cwd: root })`git init`;
 }
 
 export function toContact(author: string, email?: string) {
