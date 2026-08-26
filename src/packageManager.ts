@@ -86,9 +86,23 @@ async function runPmCommand(rootDir: string, action: string, pm: PackageManager,
   }
 }
 
-export async function configureYarn(rootDir: string) {
-  const args = ["config", "set", "nodeLinker", "node-modules"];
-  await runPmCommand(rootDir, "configure package manager", "yarn", args);
+export async function configurePm(rootDir: string, pm: PackageManager) {
+  let args: string[];
+  switch (pm) {
+    case "yarn": {
+      args = ["config", "set", "nodeLinker", "node-modules"];
+      break;
+    }
+    case "npm": {
+      args = ["pkg", "set", "overrides.grimoire-kolmafia.libram=$libram"];
+      break;
+    }
+    case "pnpm": {
+      // No configuration to do here
+      return;
+    }
+  }
+  await runPmCommand(rootDir, "configure package manager", pm, args);
 }
 
 export async function installDeps(rootDir: string, pm: PackageManager) {
