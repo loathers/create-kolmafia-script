@@ -75,45 +75,25 @@ export function getPmAndVersion(
   return { packageManager, packageManagerVersion };
 }
 
-export async function configureYarn(rootDir: string) {
-  const args = ["config", "set", "nodeLinker", "node-modules"];
-  printCommand("yarnpkg", ...args);
-  await execa("yarnpkg", args, {
-    stdio: "inherit",
-    shell: true,
-    cwd: rootDir,
-  });
-}
-
-export async function installDeps(rootDir: string, pm: PackageManager) {
-  let command: string;
-  let args: string[];
-
-  switch (pm) {
-    case "npm": {
-      command = "npm";
-      args = ["install"];
-      break;
-    }
-    case "yarn": {
-      command = "yarnpkg";
-      args = ["install"];
-      break;
-    }
-    case "pnpm": {
-      command = "pnpm";
-      args = ["install"];
-      break;
-    }
-  }
-
+async function runPmCommand(rootDir: string, action: string, pm: PackageManager, args: string[]) {
+  const command = pm === "yarn" ? "yarnpkg" : pm;
   printCommand(command, ...args);
 
   try {
     await execa(command, args, { stdio: "inherit", shell: true, cwd: rootDir });
   } catch (err) {
-    throw new Error(`Failed to install dependencies: ${err}`, { cause: err });
+    throw new Error(`Failed to ${action}: ${err}`, { cause: err });
   }
+}
+
+export async function configureYarn(rootDir: string) {
+  const args = ["config", "set", "nodeLinker", "node-modules"];
+  await runPmCommand(rootDir, "configure package manager", "yarn", args);
+}
+
+export async function installDeps(rootDir: string, pm: PackageManager) {
+  const args: string[] = ["install"];
+  await runPmCommand(rootDir, "install dependencies", pm, args);
 }
 
 export async function addDeps(
@@ -127,32 +107,6 @@ export async function addDeps(
     pm: PackageManager;
   },
 ) {
-  let command: string;
-  let args: string[];
-
-  switch (pm) {
-    case "npm": {
-      command = "npm";
-      args = ["install", isDev ? "-D" : "-S", ...deps];
-      break;
-    }
-    case "yarn": {
-      command = "yarnpkg";
-      args = ["add", ...deps, ...(isDev ? ["-D"] : [])];
-      break;
-    }
-    case "pnpm": {
-      command = "pnpm";
-      args = ["add", ...deps, ...(isDev ? ["-D"] : [])];
-      break;
-    }
-  }
-
-  printCommand(command, ...args);
-
-  try {
-    await execa(command, args, { stdio: "inherit", shell: true, cwd: rootDir });
-  } catch (err) {
-    throw new Error(`Failed to add dependencies: ${err}`, { cause: err });
-  }
+  const args: string[] = ["add", ...deps, ...(isDev ? ["-D"] : [])];
+  await runPmCommand(rootDir, "add dependencies", pm, args);
 }
