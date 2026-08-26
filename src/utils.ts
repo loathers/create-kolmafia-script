@@ -2,11 +2,26 @@ import chalk from "chalk";
 import { execa } from "execa";
 import fs from "node:fs/promises";
 
+function isEnoent(err: unknown) {
+  return err instanceof Error && "code" in err && err.code === "ENOENT";
+}
+
+export async function fileExists(fname: string) {
+  try {
+    return (await fs.stat(fname)).isFile();
+  } catch (err) {
+    if (isEnoent(err)) {
+      return false;
+    }
+    throw err;
+  }
+}
+
 export async function isOccupied(dirname: string) {
   try {
     return (await fs.readdir(dirname)).filter((s) => !s.startsWith(".")).length !== 0;
   } catch (err) {
-    if (err instanceof Error && "code" in err && err.code === "ENOENT") {
+    if (isEnoent(err)) {
       return false;
     }
     throw err;

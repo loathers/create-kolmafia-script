@@ -51,6 +51,11 @@ export function templateIgnores({
   return ignored;
 }
 
+function shouldAppend(targetPath: string): boolean {
+  // It's safe to append to .*ignore files; we conservatively assume it isn't for others.
+  return /^\..*ignore$/.test(path.basename(targetPath));
+}
+
 export async function copy(args: {
   targetDir: string;
   sourceDir: string;
@@ -65,6 +70,9 @@ export async function copy(args: {
 
     const sourceData = await fs.readFile(sourceFile);
     const targetData = isUtf8(sourceData) ? Buffer.from(format(sourceData, args.view)) : sourceData;
-    await fs.writeFile(targetPath, targetData, "utf-8");
+    const flag = shouldAppend(targetPath) ? "a" : "wx";
+    await fs.writeFile(targetPath, targetData, { encoding: "utf-8", flag });
   }
 }
+
+export const _exportedForTesting = process.env.VITEST ? { shouldAppend } : undefined;
