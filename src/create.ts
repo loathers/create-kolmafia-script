@@ -9,7 +9,7 @@ import { parseCliArgs } from "./args.js";
 import { copy, templateIgnores } from "./copy.js";
 import {
   addDeps,
-  configureYarn,
+  configurePm,
   installDeps,
   getCiInstallCommand,
   getPmAndVersion,
@@ -163,8 +163,9 @@ export async function create(entrypoint: string) {
     }
   }
 
-  if (packageManager === "yarn") {
-    await configureYarn(packageDir);
+  if (isPmSupported(packageManager)) {
+    log.step("Setting additional package manager configuration, if needed");
+    await configurePm(packageDir, packageManager);
   }
 
   if (flags["skip-install"]) {
