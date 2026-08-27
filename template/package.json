@@ -6,9 +6,12 @@
   "license": "{{license}}",
   "scripts": {
     "build": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "build:watch": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript --watch",
+    "test": "vitest run",
+    "test:watch": "vitest watch --no-clearScreen",
+    "watch": "concurrently --prefix \"[{name} {time}]\" -t \"HH:mm:ss\" --pad-prefix \"{{packageManager}}:*:watch\"",
     "format": "eslint src --fix --ext .ts && NODE_OPTIONS=\"--experimental-strip-types\" prettier --write .",
     "lint": "eslint src --ext .ts &&  NODE_OPTIONS=\"--experimental-strip-types\" prettier --check .",
-    "watch": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript --watch",
     "install-mafia": "npm run build && create-kolmafia-script --install"
   },
   "dependencies": {
@@ -29,6 +32,7 @@
     "@types/babel__core": "^7.20.5",
     "@types/babel__preset-env": "^7.10.0",
     "@types/node": "^25.3.0",
+    "concurrently": "^10.0.5",
     "create-kolmafia-script": "latest",
     "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
@@ -37,7 +41,8 @@
     "prettier": "^3.8.1",
     "rollup": "^4.57.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.67.0"
+    "typescript-eslint": "^8.67.0",
+    "vitest": "^4.1.11"
   },
   "packageManager": "{{packageManager}}@{{packageManagerVersion}}"
 }
