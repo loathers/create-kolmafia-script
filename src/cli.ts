@@ -8,7 +8,7 @@ function main() {
 
   switch (firstArgument) {
     case "--install":
-      return install();
+      return install(import.meta.filename);
     default:
       return create(import.meta.filename);
   }
