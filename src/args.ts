@@ -90,3 +90,32 @@ export function parseCliArgs(entrypoint: string) {
     },
   });
 }
+
+export function parseInstallArgs(entrypoint: string) {
+  const index = process.argv.indexOf("--install");
+  if (index !== -1) process.argv.splice(index, 1);
+
+  return pargs(entrypoint, {
+    allowNegative: true,
+    allowPositionals: 1,
+    positionals: [
+      { name: "directory", description: "your KoLmafia directory, if it isn't found on its own" },
+    ],
+    description: {
+      summary: "Symlink this project's built dist folder into KoLmafia.",
+      examples: [
+        { command: "create-kolmafia-script --install", description: "find KoLmafia by itself" },
+        {
+          command: "create-kolmafia-script --install --force ~/kolmafia",
+          description: "use this directory, replacing anything in the way",
+        },
+      ],
+    },
+    options: {
+      force: {
+        type: "boolean",
+        description: "replace whatever is in the way of a link, even a real file or directory",
+      },
+    },
+  });
+}

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 
-import { parseCliArgs } from "./args.js";
+import { parseCliArgs, parseInstallArgs } from "./args.js";
 
 const originalArgv = process.argv;
 
@@ -9,6 +9,11 @@ const originalArgv = process.argv;
 function parse(...args: string[]) {
   process.argv = [originalArgv[0], import.meta.filename, ...args];
   return parseCliArgs(import.meta.filename);
+}
+
+function parseInstall(...args: string[]) {
+  process.argv = [originalArgv[0], import.meta.filename, "--install", ...args];
+  return parseInstallArgs(import.meta.filename);
 }
 
 describe("parseCliArgs", () => {
@@ -85,5 +90,54 @@ describe("parseCliArgs", () => {
 
     expect(values.help).toBe(true);
     expect(values.version).toBe(false);
+  });
+});
+
+describe("parseInstallArgs", () => {
+  afterEach(() => {
+    process.argv = originalArgv;
+  });
+
+  it("needs nothing but --install", async () => {
+    const { values, positionals, errors } = await parseInstall();
+
+    expect(errors).toHaveLength(0);
+    expect(values.force).toBeUndefined();
+    expect(positionals).toEqual([]);
+  });
+
+  it.each([
+    ["before", ["--force", "../mafia"]],
+    ["after", ["../mafia", "--force"]],
+  ])("reads --force %s the path", async (_, args) => {
+    const { values, positionals, errors } = await parseInstall(...args);
+
+    expect(errors).toHaveLength(0);
+    expect(values.force).toBe(true);
+    expect(positionals).toEqual(["../mafia"]);
+  });
+
+  it("complains about more than one path", async () => {
+    const { errors } = await parseInstall("../mafia", "../other");
+
+    expect(errors).not.toHaveLength(0);
+  });
+
+  it("complains about an option it does not know", async () => {
+    const { errors } = await parseInstall("--nonsense");
+
+    expect(errors.join("\n")).toMatch(/nonsense/);
+  });
+
+  it("does not treat --install as an option of its own", async () => {
+    const { errors } = await parseInstall("--no-install");
+
+    expect(errors.join("\n")).toMatch(/unknown option.*install/i);
+  });
+
+  it("does not take create's options", async () => {
+    const { errors } = await parseInstall("--libram");
+
+    expect(errors.join("\n")).toMatch(/libram/);
   });
 });
